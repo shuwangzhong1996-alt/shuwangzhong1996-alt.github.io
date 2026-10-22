@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+  <title>钟书旺｜个人视觉档案</title>
+  <style>
+    #siteLoader{position:fixed;inset:0;z-index:10000;display:grid;grid-template-rows:auto 1fr auto;padding:clamp(22px,4vw,58px);background:#111110;color:#f4f2ec;opacity:1;visibility:visible;transition:opacity .8s cubic-bezier(.2,.7,.2,1),visibility .8s;overflow:hidden}
+    #siteLoader.is-leaving{opacity:0;visibility:hidden;pointer-events:none}
+    #siteLoader[hidden]{display:none}
+    body.site-loading{overflow:hidden}
+    .site-loader-head,.site-loader-foot{display:flex;align-items:center;justify-content:space-between;font:10px/1.3 Arial,sans-serif;letter-spacing:.16em;position:relative;z-index:1}
+    .site-loader-logo{font-size:clamp(18px,2vw,28px);font-weight:900;letter-spacing:-.06em}.site-loader-logo sup{font-size:.35em;vertical-align:top;margin-left:2px}
+    .site-loader-stage{align-self:center;width:min(560px,72vw);margin:0 auto;position:relative;z-index:1}
+    .site-loader-index{display:flex;justify-content:space-between;color:#aaa9a3;font:9px/1.4 monospace;letter-spacing:.16em}
+    .site-loader-word-wrap{position:relative;width:100%;aspect-ratio:600/250;margin:clamp(22px,5vh,52px) 0 clamp(20px,4vh,42px);display:grid;place-items:center}
+    .site-loader-word{position:relative;z-index:1;margin:0;font:900 clamp(52px,13vw,160px)/.78 Arial,sans-serif;letter-spacing:-.095em;white-space:nowrap;color:#f4f2ec}
+    .site-loader-frame{position:absolute;z-index:3;inset:0;overflow:visible;transform:translateZ(0);transition:transform 1.25s cubic-bezier(.18,.72,.18,1);will-change:transform}
+    .site-loader-fill{position:absolute;inset:0;background:var(--loader-cover-color,#f4f2ee);opacity:0;transition:opacity .4s ease}
+    .site-loader-line{position:absolute;z-index:1;background:#f4f2ec;will-change:transform;transform:scale(0)}
+    .site-loader-line-top,.site-loader-line-bottom{width:100%;height:2px}
+    .site-loader-line-top{left:0;top:0;transform-origin:left center}
+    .site-loader-line-right,.site-loader-line-left{width:2px;height:100%}
+    .site-loader-line-right{right:0;top:0;transform-origin:center top}
+    .site-loader-line-bottom{right:0;bottom:0;transform-origin:right center}
+    .site-loader-line-left{left:0;bottom:0;transform-origin:center bottom}
+    .site-loader-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#ef5739;opacity:0}
+    .site-loader-line-top .site-loader-dot{right:0;top:50%;transform:translate(50%,-50%)}
+    .site-loader-line-right .site-loader-dot{right:50%;bottom:0;transform:translate(50%,50%)}
+    .site-loader-line-bottom .site-loader-dot{left:0;top:50%;transform:translate(-50%,-50%)}
+    .site-loader-line-left .site-loader-dot{left:50%;top:0;transform:translate(-50%,-50%)}
+    #siteLoader.is-tracing .site-loader-line{animation:site-loader-segment .22s linear both}
+    #siteLoader.is-tracing .site-loader-line-right{animation-delay:.22s}
+    #siteLoader.is-tracing .site-loader-line-bottom{animation-delay:.44s}
+    #siteLoader.is-tracing .site-loader-line-left{animation-delay:.66s}
+    #siteLoader.is-tracing .site-loader-line-top .site-loader-dot{animation:site-loader-dot-travel .22s linear both}
+    #siteLoader.is-tracing .site-loader-line-right .site-loader-dot{animation:site-loader-dot-travel .22s linear .22s both}
+    #siteLoader.is-tracing .site-loader-line-bottom .site-loader-dot{animation:site-loader-dot-travel .22s linear .44s both}
+    #siteLoader.is-tracing .site-loader-line-left .site-loader-dot{animation:site-loader-dot-travel .22s linear .66s both}
+    #siteLoader.is-filled .site-loader-fill{opacity:1}
+    #siteLoader.is-filled .site-loader-dot{opacity:0}
+    #siteLoader.is-expanding .site-loader-frame{transform:scale(10)}
+    #siteLoader.is-expanding{animation:site-loader-reveal .65s cubic-bezier(.18,.72,.18,1) forwards}
+    #siteLoader.is-tracing .site-loader-orbit,#siteLoader.is-expanding .site-loader-head,#siteLoader.is-expanding .site-loader-index,#siteLoader.is-expanding .site-loader-word,#siteLoader.is-expanding .site-loader-foot{opacity:0;transition:opacity .25s ease}
+    @keyframes site-loader-segment{to{transform:scale(1)}}
+    @keyframes site-loader-dot-travel{0%,96%{opacity:1}100%{opacity:0}}
+    @keyframes site-loader-reveal{0%,12%{opacity:1}58%{opacity:.62}100%{opacity:0}}
+    .site-loader-orbit{position:absolute;right:-16vw;top:50%;width:clamp(160px,30vw,440px);aspect-ratio:1;border:1px solid #ffffff10;border-radius:50%;transform:translateY(-50%)}
+    .site-loader-orbit:before,.site-loader-orbit:after{content:"";position:absolute;border:1px solid #ffffff0d;border-radius:50%;inset:12%}
+    .site-loader-orbit:after{inset:29%;background:#ef573908}
+    .site-loader-foot{color:#898882;font-size:8px}
+    @media(prefers-reduced-motion:reduce){#siteLoader,.site-loader-frame,.site-loader-fill{transition:none;animation:none}#siteLoader .site-loader-line{animation:none;transform:scale(1)}#siteLoader .site-loader-dot{animation:none!important;opacity:0}}
+  </style>
+  <link rel="stylesheet" href="styles.css">
+  <style id="platforms-layout-fix">
+    #platforms.platforms-project{padding-top:24px;padding-bottom:32px}
+    #platforms .platforms-project-main{position:relative;display:grid;grid-template-columns:32.5% minmax(0,1fr);align-items:start;gap:16px;width:min(100%,var(--content-width));min-height:0;margin:18px auto 0;padding:0}
+    #platforms .platforms-project-intro{display:flex;min-width:0;flex-direction:column;gap:14px}
+    #platforms .platforms-project-copy{padding:0;max-width:none}
+    #platforms .platforms-project-copy .platforms-project-kicker{margin-bottom:12px}
+    #platforms .platforms-project-copy h2{margin:0 0 12px;font-size:clamp(34px,4vw,64px);line-height:.96}
+    #platforms .platforms-project-copy h3{margin:0 0 10px;font-size:clamp(15px,1.4vw,20px)}
+    #platforms .platforms-project-copy>p{font-size:clamp(11px,.85vw,13px);line-height:1.65}
+    #platforms .platforms-project-copy .tags{margin-top:14px}
+    #platforms .platforms-project-hero.image-slot{grid-column:2;grid-row:1;display:block;width:100%;height:auto!important;min-height:0!important;aspect-ratio:16 / 9!important;align-self:start}
+    #platforms .platforms-project-secondary.image-slot{position:absolute;left:0;top:auto;bottom:0;display:block;flex:none;width:calc((100% - 24px)/3);height:auto!important;min-height:0!important;aspect-ratio:15 / 9!important}
+    #platforms .platforms-project-secondary.image-slot:before,#platforms .platforms-project-secondary.image-slot:after{content:none!important;display:none!important}
+    #platforms .platforms-process-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:12px;width:min(100%,var(--content-width));margin:16px auto 0}
+    #platforms .platforms-process-item{display:flex;min-width:0;align-items:stretch}
+    #platforms .platforms-process-image.image-slot{display:block;width:100%;height:100%!important;min-height:0!important;aspect-ratio:16 / 9!important;align-self:stretch}
+    @media(max-width:900px){#platforms .platforms-project-main{grid-template-columns:32.5% minmax(0,1fr);gap:14px}#platforms .platforms-project-secondary.image-slot{width:calc((100% - 24px)/3)}#platforms .platforms-process-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:600px){#platforms .platforms-project-main{grid-template-columns:1fr;gap:16px}#platforms .platforms-project-hero.image-slot{grid-column:1;grid-row:auto}#platforms .platforms-project-secondary.image-slot{position:relative;left:auto;top:auto;bottom:auto;width:100%}#platforms .platforms-process-grid{grid-template-columns:1fr;gap:14px;margin-top:14px}}
+  </style>
+</head>
+<body class="motion-ready">
+    
+  <nav class="topbar">
+    <a class="logo" href="#top">ZHONG<sup>®</sup></a>
+    <div class="nav-actions"><span>PORTFOLIO 2026</span><a href="#platforms">LET'S TALK</a><a class="menu-pill" href="#sections">MENU&nbsp; ☰</a></div>
+  </nav>
+  <div class="scroll-rail" aria-hidden="true"><i id="scrollProgress" style="height: 0%;"></i></div>
+  <nav class="quick-nav" id="quickNav" aria-label="作品集快速导航" aria-hidden="true">
+    <a class="quick-nav-home is-current" href="#top" aria-label="返回页面顶部" title="返回顶部">↑</a>
+    <a href="#ip-design">IP</a>
+    <a href="#type">AIGC</a>
+    <a href="#asset-loop">素材模型</a>
+    <a href="#illustration">插画</a>
+    <a href="#mural">彩绘</a>
+    <a href="#platforms">其他平台</a>
+    <a href="#profile">简介</a>
+  </nav>
+
+  <main>
+    <section class="cover" id="top">
+      <div class="cover-geometry" aria-hidden="true">
+        <i class="cover-dots"></i><i class="cover-slash"></i><i class="cover-orb"></i>
+        <i class="cover-rules"></i><i class="cover-star">✳</i>
+      </div>
+      <div class="cover-back-title">作品集</div>
+      <p class="kicker" style="font-size: 14px;">个人作品集 / ZHONG SHUWANG PORTFOLIO</p>
+      <div class="cover-title" style="--drift: 0;">
+        <span class="">ILLUSTRATION</span>
+        <span class="">DESIGN</span>
+        <span class="">TYPE &amp; VISUAL</span>
+      </div>
+      <p class="cover-note">✦ 让想法被看见，让视觉推动结果。</p>
+      <a class="cover-next" href="#sections">浏览作品板块 <b>→</b></a>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-group">
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+        </div>
+        <div class="marquee-group">
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="profile-section"><section class="detail profile-detail" id="profile">
+    <div class="detail-top"><span>01 / PROFILE</span><a href="#sections">返回目录 ↑</a></div>
+    <header class="profile-intro">
+      <h2 class="">个人简介</h2>
+      <div class="profile-contacts">
+        <div><small>微信 / WECHAT</small><strong class="">FaXiuStampede</strong><button class="contact-copy" type="button" data-copy="profile-wechat" data-copy-value="FaXiuStampede">复制 ↗</button></div>
+        <div><small>电话 / PHONE NUMBER</small><strong class="">19165030789</strong><button class="contact-copy" type="button" data-copy="profile-phone" data-copy-value="19165030789">复制 ↗</button></div>
+        <div><small>邮箱 / E-MAIL</small><strong class="">1443540337@qq.com</strong><button class="contact-copy" type="button" data-copy="profile-email" data-copy-value="1443540337@qq.com">复制 ↗</button></div>
+      </div>
+      <h3 class="">跨越空间、互联网与电商的视觉设计实践。</h3>
+      <p class="">从墙绘与空间视觉开始职业旅程，积累 6 年现场执行、客户沟通和大型画面把控经验；随后进入曼奇立德商业插画，拥有 2 年互联网插画经验，近 3 年专注电商产品设计、运营设计与素材设计。</p>
+      <div class="tags">
+        <span class="">视觉设计</span>
+        <span class="">商业插画</span>
+        <span class="">电商设计</span>
+        <span class="">IP 设计</span>
+      </div>
+    </header>
+    <div class="profile-bottom">
+      <div class="profile-left">
+        <div class="profile-personal">
+          <div class="image-slot profile-photo" aria-label="个人照片占位" style="background-image: url(&quot;assets/uploads/portfolio-463b2f834c90deed578db486330c1d2740c9296511f306d9f02465a5865a8db2.png&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="profile-info">
+            <dl class="profile-facts">
+              <div><dt class="">姓&nbsp; &nbsp; &nbsp; 名</dt><dd class="" style="letter-spacing: 3px;">钟书旺</dd></div>
+              <div><dt class="">艺&nbsp; &nbsp; &nbsp; 名</dt><dd class="" style="letter-spacing: 3px;">法修</dd></div>
+              <div><dt class="">年&nbsp; &nbsp; &nbsp; 龄</dt><dd class="" style="letter-spacing: 2.5px;">30</dd></div>
+              <div><dt class="">教育学历</dt><dd class="">九江学院 / 视觉传达设计</dd></div>
+              <div class="profile-awards"><dt class="">获奖经历</dt><dd><span class="">江西省“第十六届运动会志愿者IP设计”&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 一等奖</span><span class="">站酷“圈我一个红楼梦创意场景IP大赛”&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 二等奖</span><span class="">青创团“元宇宙虚拟IP设计大赛”&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;新锐奖</span></dd></div>
+            </dl>
+            <div class="profile-bio"><strong class="">个人自述</strong><p class="" style="font-size: 14px;">擅长IP设计、儿童绘本、潮流、国风等多种商业插画风格，具备较强的手绘能力与创意表现力，善于团队合作和沟通，学习能力强，对待工作积极认真。</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-career" role="group" aria-label="工作经历">
+        <div class="timeline profile-timeline">
+          <div class="profile-timeline-future"><b class="" style="font-size: 14px;">更多精彩发生中...</b></div>
+          <article><b class="" style="font-size: 14px;">2023 / 09 — 2026 / 08</b><h4 class="">趣印科技</h4><p class="">聚焦电商产品设计、运营设计与素材设计，参与从需求拆解、视觉创意到多渠道落地的完整流程。</p></article>
+          <article><b class="" style="font-size: 14px;">2022 / 06 — 2023 / 09</b><h4 class="">曼奇立德</h4><p class="">参与商业插画、KV、H5、商业素材与字体绘制，为不同传播场景建立统一且具有辨识度的视觉表达。</p></article>
+          <article><b class="" style="font-size: 14px;">2018 / 06 — 2022 / 01</b><h4 class="">789彩绘工作室</h4><p class="">负责方案设计、客户沟通与现场执行，积累大型画面把控及复杂项目落地经验。</p></article>
+        </div>
+      </div>
+    </div>
+  </section></div>
+
+    <div class="marquee profile-break" aria-hidden="true">
+      <div class="marquee-track">
+        <div class="marquee-group">
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+        </div>
+        <div class="marquee-group">
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+          <span>ILLUSTRATION ✦ DESIGN ✦ TYPE ✦ MURAL ✦ E-COMMERCE ✦ VISUAL STORYTELLING ✦</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="hub" id="sections" style="--hub-copy-y: 0px; --hub-copy-opacity: 1;">
+      <header class="hub-copy">
+        <p class="">ZHONG SHUWANG / VISUAL DESIGNER</p>
+        <h1 class="">视觉档案<span>。</span></h1>
+        <small class="">点击任意板块直达详情，或继续向下浏览完整作品集。</small>
+      </header>
+      <div class="chapter-grid">
+        <a class="chapter c1 directory-card has-image" href="#ip-design" style="--dir-x: -175px; --dir-y: -95px; --dir-r: -4deg; --dir-s: 0.82; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/3ecaeb508f0d4ee68902e4ab4e282b2f.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>01</i><div class="mini-art"></div><small>IP DESIGN</small><strong class="">IP设计</strong><b>↘</b></a>
+        <a class="chapter c3 directory-card has-image" href="#type" style="--dir-x: 0px; --dir-y: -155px; --dir-r: 2.5deg; --dir-s: 0.86; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/0a9ad22d824c4330b1191706bd739e54.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>02</i><div class="mini-art"></div><small>AIGC</small><strong class="">AIGC</strong><b>↘</b></a>
+        <a class="chapter c4 directory-card has-image" href="#asset-loop" style="--dir-x: 175px; --dir-y: -105px; --dir-r: 4deg; --dir-s: 0.82; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/d878c2ddb2034d3f96b3fce8422324f9.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>03</i><div class="mini-art"></div><small>ASSETS &amp; 3D</small><strong class="">商业素材和模型</strong><b>↘</b></a>
+        <a class="chapter c2 directory-card has-image" href="#illustration" style="--dir-x: -155px; --dir-y: 175px; --dir-r: 3.5deg; --dir-s: 0.84; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/d794892aa01f47f4b56d89a06186df1e.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>04</i><div class="mini-art"></div><small>ILLUSTRATION</small><strong class="">商业插画</strong><b>↘</b></a>
+        <a class="chapter c5 directory-card has-image" href="#mural" style="--dir-x: 0px; --dir-y: 220px; --dir-r: -2.5deg; --dir-s: 0.86; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/60d960571904489ab15a5a90602e03ff.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>05</i><div class="mini-art"></div><small>MURAL</small><strong class="">彩绘</strong><b>↘</b></a>
+        <a class="chapter c6 directory-card has-image" href="#platforms" style="--dir-x: 170px; --dir-y: 185px; --dir-r: 5deg; --dir-s: 0.82; --dir-opacity: 0.2; --dir-blur: 2.2px; background-image: none; background-size: cover; background-position: center center; --chapter-image: url(&quot;assets/uploads/d18e776830a54f68bec057ec00f4d112.webp&quot;);"><span class="chapter-image-layer" aria-hidden="true"></span><span class="chapter-glass" aria-hidden="true"></span><i>06</i><div class="mini-art"></div><small>MORE OF ME</small><strong class="">其他个人作品</strong><b>↘</b></a>
+      </div>
+    </section>
+
+    <div id="details">
+  <section class="detail" id="ip-design">
+    <div class="detail-top"><span>01 / IP DESIGN</span><a href="#sections">返回目录 ↑</a></div>
+    <div class="detail-main">
+      <div class="detail-copy in-view">
+        <h2 class="" style="font-size: 105px; --ip-title-align-y: 0px;">IP设计</h2>
+        <h3 class="">Phomemo IP形象momo</h3>
+        <p class="">包含角色设定、三视图、结合公司产品特色，进行创作换装延展与场景插画等 IP 内容，与运营产品多方合作，成功落地在独立站。</p>
+        <div class="tags"><span class="">角色设定</span><span class="">三视图</span><span class="">换装延展</span><span class="">场景插画</span></div>
+        
+      </div>
+      <div class="gallery in-view">
+        <div class="image-slot has-image has-video" style="background-image: none;"><video playsinline="" preload="none" src="assets/uploads/8a63d599e83647758a25ff9747576e06.mp4" disablepictureinpicture="" controlslist="nodownload noplaybackrate noremoteplayback" style="position: absolute; max-width: none; max-height: none; object-fit: fill; width: 100%; height: 118.265%; left: 0%; top: -3.32003%;" loop=""></video></div>
+        <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a8e7e8f99e66da46da630d2171445edd8366597f96f7132f5dcf008d10817dcf.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-6841db520ac539d2df1f6daca05150d72abb026ecd1d063f95ea9c073722db04.jpg&quot;); background-size: cover; background-position: center center;"></div>
+      </div>
+      <div class="ip-extra-slots" aria-label="品牌 IP 延展媒体">
+        <div class="ip-extra-caption" aria-hidden="true"><span>CHARACTER STUDIES / IP角色延展</span><b>表情 · 动作 · 造型&nbsp;&nbsp; 01—03</b></div>
+        <div class="image-slot ip-extra-slot has-image has-video" style="background-image: none; background-size: cover; background-position: center center;"><video playsinline="" preload="none" src="assets/uploads/001e5473beb6407e9a9cdb08845bb473.mp4" disablepictureinpicture="" controlslist="nodownload noplaybackrate noremoteplayback" style="position: absolute; max-width: none; max-height: none; object-fit: fill; width: 100%; height: 100%; left: 0%; top: 0%;" loop=""></video><button class="video-sound-toggle" type="button" aria-label="打开视频声音" title="打开声音"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="m16 9 5 6m0-6-5 6"></path></svg></button></div>
+        <div class="image-slot ip-extra-slot has-image has-video" style="background-image: none;"><video playsinline="" preload="none" src="assets/uploads/e7955b2ef3984e50a9c7084e2f0cf30c.mp4" disablepictureinpicture="" controlslist="nodownload noplaybackrate noremoteplayback" style="position: absolute; max-width: none; max-height: none; object-fit: fill; width: 100%; height: 100%; left: 0%; top: 0%;" loop=""></video><button class="video-sound-toggle" type="button" aria-label="打开视频声音" title="打开声音"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="m16 9 5 6m0-6-5 6"></path></svg></button></div>
+        <div class="image-slot ip-extra-slot has-image has-video" style="background-image: none;"><video playsinline="" preload="none" src="assets/uploads/28256bd4edd84847b2f4dfdcdc8c94ae.mp4" disablepictureinpicture="" controlslist="nodownload noplaybackrate noremoteplayback" style="position: absolute; max-width: none; max-height: none; object-fit: fill; width: 103.497%; height: 101.05%; left: -3.49693%; top: 0%;" loop=""></video><button class="video-sound-toggle" type="button" aria-label="打开视频声音" title="打开声音"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="m16 9 5 6m0-6-5 6"></path></svg></button></div>
+      </div>
+    </div>
+  </section><section class="ip-showcase-section" id="ip-showcase">
+    <button class="ip-showcase-toggle" type="button" aria-expanded="false" aria-controls="ip-showcase-content">更多视觉延展 <span aria-hidden="true">↓</span></button>
+    <div class="ip-showcase-content" id="ip-showcase-content" hidden="">
+      <div class="ip-showcase-heading">
+        <span class="ip-showcase-kicker">IP DESIGN / CHARACTER APPLICATION</span>
+        <div><h2 class="" style="font-size: 31px;">更多IP 视觉延展</h2><p class="">从角色主视觉到不同场景应用，继续补充 MOMO 的创作故事。</p></div>
+        <span class="ip-showcase-count">01 — 08&nbsp;&nbsp; / &nbsp;&nbsp;MOMO</span>
+      </div>
+      <div class="ip-showcase-landscape-grid"><figure class="ip-showcase-item ip-showcase-landscape"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-5f16a4d0ba98897361cea0659df98ec188bb1e2434e3060d01170ffb9744883b.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>01 / MOMO</span><strong class="">角色基础表情</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-landscape"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-8f66bb6a61ae10a84a34b6b1c26b5a6ef7b386316f8f2f496cb0945a4c5d0576.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>02 / MOMO</span><strong class="">APP首页背景</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-landscape"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-f9bea6e7fa454dd417bcf3997cd263cbb3dc417fd6ac2e5c7dfd0eee2edf66f4.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>03 / MOMO</span><strong class="">动作设定</strong></figcaption></figure></div>
+      <div class="ip-showcase-portrait-grid"><figure class="ip-showcase-item ip-showcase-portrait"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-fdbe785b2e6de63bd73143f045c28d44d37f1c869a0f69aa7760ade9283eb570.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>04 / MOMO</span><strong class="">学习场景</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-portrait"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-6a73f1ddabf1221009c598ce0384d55d20548f2473df3d0701525b514c8f0ed8.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>05 / MOMO</span><strong class="">家用收纳场景</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-portrait"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-d04dc56c81c6c71f837d71d2a63fe237799450f4e93179edbc6116a376d417ed.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>06 / MOMO</span><strong class="">物流场景</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-portrait"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-e3a075643955664849063c8202bb1842081a416fe37cd706eb98ee145256d629.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>07 / MOMO</span><strong class="">商超标签场景</strong></figcaption></figure><figure class="ip-showcase-item ip-showcase-portrait"><div class="image-slot ip-showcase-image has-image" style="background-image: url(&quot;assets/uploads/portfolio-06f129eae1f6e0f9e6bddd153150f8005b808a28797398576905a965255b8514.jpg&quot;); background-size: cover; background-position: center center;"></div><figcaption><span>08 / MOMO</span><strong class="">办公场景</strong></figcaption></figure></div>
+    </div>
+  </section><section class="type-facts" id="type">
+    <div class="type-facts-top"><span>02 / AIGC</span><a href="#sections">返回目录 ↑</a></div>
+    <header class="type-facts-head in-view">
+      <h2 class="">AIGC</h2>
+      <p class="">日常使用主流AI软件辅助完成工作包括不限于GPT,Codex，Lovart，Tripo等等，在工作中Vibe coding一系列小工具提升效率，曾为公司做出实质性的回报收益</p>
+    </header>
+    <div class="type-facts-grid">
+      <article class="type-fact-card type-fact-dark" style="--type-y: 0px; --type-rx: 0deg; --type-rz: 0deg; --type-scale: 1; --type-opacity: 1; --type-blur: 0px;">
+        <span class="">DYNAMIC TYPE / 特色工具</span>
+        <div class="type-tools-showcase" aria-label="自制工具图标轮播"><div class="type-tool-slide" style="--tool-index:0"><small>01 / 05</small><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="5" width="40" height="31" rx="5"></rect><path d="M11 29V22m9 7V15m9 14V19m9 10v-5M10 41h28"></path><path d="m10 18 9-6 9 3 10-8"></path></svg><span>数据分析看板</span></div><div class="type-tool-slide" style="--tool-index:1"><small>02 / 05</small><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"></circle><path d="M6 24h36M24 6a28 28 0 0 1 0 36M24 6a28 28 0 0 0 0 36M13 14h22M13 34h22"></path><path d="m18 22 4 4 8-9"></path></svg><span>多语言检测</span></div><div class="type-tool-slide" style="--tool-index:2"><small>03 / 05</small><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 9h24a5 5 0 0 1 5 5v3M8 9l6-6M8 9l6 6M40 39H16a5 5 0 0 1-5-5v-3m29 8-6 6m6-6-6-6"></path><path d="M17 23h14M17 28h10"></path></svg><span>便捷改名</span></div><div class="type-tool-slide" style="--tool-index:3"><small>04 / 05</small><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="5" width="38" height="38" rx="6"></rect><path d="M12 12h5v5h-5zm19 0h5v5h-5zm-19 19h5v5h-5zm19 0h5v5h-5z"></path><path d="m18 28 5-6 4 4 3-3 5 7H18z"></path></svg><span>智能抠图</span></div><div class="type-tool-slide" style="--tool-index:4"><small>05 / 05</small><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 39 22 8h5l13 31M14 27h22M12 44h28"></path><path d="M31 14h12M37 8v12"></path></svg><span>字体编辑</span></div></div>
+        <div class="type-fact-bottom">
+          <div><h3 class="">深入业务后为<span style="letter-spacing: -0.04em;">提升效率</span><span style="letter-spacing: -0.04em;">编写各种小工具</span><br></h3><p class="">与公司法务一起扫除近500款有风险字体，建立起1500+可商用免费字体包，多个APP字体分类检测多语言兼容等问题。</p></div>
+          <b class="">05</b>
+        </div>
+      </article>
+      <article class="type-fact-card type-fact-number" style="--type-y: 0px; --type-rx: 0deg; --type-rz: 0deg; --type-scale: 1; --type-opacity: 1; --type-blur: 0px;">
+        <div class="type-fact-number-bg image-slot"></div>
+        <span class="" style="font-size: 18px;">上新字体 / 半年收益</span>
+        <strong class="">$30w+</strong>
+        <p class="" style="font-size: 12px;">根据公司多品线字体的大盘数据，智能分析热门爆款，主导持续上新字体，半年累计增收超$30W</p>
+      </article>
+      <article class="type-fact-card type-fact-accent" style="--type-y: 0px; --type-rx: 0deg; --type-rz: 0deg; --type-scale: 1; --type-opacity: 1; --type-blur: 0px;">
+        <span class="">TYPE IN USE / 字体点击率提升</span>
+        <div class="type-image-carousel" aria-label="六张可替换图片轮播"><div class="type-image-slide image-slot has-image" aria-label="替换第 1 张图片" style="--slide-index: 0; background-image: url(&quot;assets/uploads/portfolio-f74bd95da3ea2f56fec6b27e3e88efa2b5eea6ff6d4a1fbead34373f86332822.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="type-image-slide image-slot has-image" aria-label="替换第 2 张图片" style="--slide-index: 1; background-image: url(&quot;assets/uploads/portfolio-69eb84eee2a4ed7a45f88940e459db8e1c31aa8ef96454caa2120ac672d1aafd.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="type-image-slide image-slot has-image" aria-label="替换第 3 张图片" style="--slide-index: 2; background-image: url(&quot;assets/uploads/portfolio-0d811e123fca7fa07168e6255539e8e0a0c5d0df0fb2d57877fc2f6fa6aafc41.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="type-image-slide image-slot has-image" aria-label="替换第 4 张图片" style="--slide-index: 3; background-image: url(&quot;assets/uploads/portfolio-84c498840fc6489e9b3c31dbf35ea22c8e279c5b29481837f45f833cc72cdf1b.png&quot;); background-size: cover; background-position: center center;"></div><div class="type-image-slide image-slot has-image" aria-label="替换第 5 张图片" style="--slide-index: 4; background-image: url(&quot;assets/uploads/portfolio-87ffbc3701a2b66e853953eef876a91d52ef0a01651f1bf97d1cc06e51fae7f6.png&quot;); background-size: cover; background-position: center center;"></div><div class="type-image-slide image-slot has-image" aria-label="替换第 6 张图片" style="--slide-index: 5; background-image: url(&quot;assets/uploads/portfolio-8cfa5fa48aa0d5a03f140a4ae87a0ca1eeb71970c6d4778c5b623cdd71f46478.jpg&quot;); background-size: cover; background-position: center center;"></div></div>
+        <div class="type-fact-bottom">
+          <div><h3 class="">字体焕新后点击率提升</h3><p class="" style="font-size: 12px;">为APP增加新的带使用场景字体预览，有效增加用户点击率</p></div>
+          <b class="">11%</b>
+        </div>
+      </article>
+    </div>
+    <div class="type-tools in-view">
+      <span class="">TOOLS / COLLABORATORS / 再实际工作中使用AI工具提效</span>
+      <div><b class="">GPT</b><b class="">Codex</b><b class="">Gemini</b><b class="">Lovart</b><b class="">Tripo</b><b class=""><b class="">Tripo</b></b></div>
+    </div>
+  </section><section class="asset-loop" id="asset-loop">
+    <div class="asset-loop-top"><span class="">03 / SPHERICAL MATERIAL WALL</span><a class="" href="#sections">返回目录 ↑</a></div>
+    <header class="asset-loop-heading">
+      <span class="" style="letter-spacing: 0.5px; font-size: 15px;">VISUAL MATERIALS / SPHERICAL WALL</span>
+      <h2 class="" style="font-size: 105px;">图案与素材</h2>
+      <p class="" style="font-size: 13px;">面向海外市场的节日或主题方向的矢量小素材，持续关注用户需求，流行趋势，市场爆款，为素材库持续创作新素材</p>
+    </header>
+    <div class="asset-loop-rows" aria-label="连续滚动的可替换球壁素材">
+      <div class="asset-loop-lane"><div class="asset-loop-marquee"><div class="asset-loop-set"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 01" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-db2f41a9ded6ba1c3a5d3565b19d52ebb4102aeef4c798da3c3b1c15ee2dd535.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 01</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 02" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-9f6916ad2ebacd846b1fb21f37a59ae96b3e9c5221867db82c90745678f5af26.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 02</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 03" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-7b8ca4f1980c593619b3e9d6f80a6e3b427f9b7ce58f5d306cf3790b05e4ea07.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 03</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 04" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-f0d361d25a9b2e432a630e8d1ecdc52808e64affdbe4fd1f760f1b42ef3b9529.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 04</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 05" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-07138227310b0d932b9d7bdc06a047c13f56f2d98a2a8052ec53205ae5208d9c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 05</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 06" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-f528902901651cc57bbe89f6de92b0eb04d0857599b6cb05c4ca1ac51cf296c5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 06</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 01" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-db2f41a9ded6ba1c3a5d3565b19d52ebb4102aeef4c798da3c3b1c15ee2dd535.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 01</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 02" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-9f6916ad2ebacd846b1fb21f37a59ae96b3e9c5221867db82c90745678f5af26.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 02</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 03" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-7b8ca4f1980c593619b3e9d6f80a6e3b427f9b7ce58f5d306cf3790b05e4ea07.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 03</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 04" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-f0d361d25a9b2e432a630e8d1ecdc52808e64affdbe4fd1f760f1b42ef3b9529.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 04</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 05" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-07138227310b0d932b9d7bdc06a047c13f56f2d98a2a8052ec53205ae5208d9c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 05</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 06" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-f528902901651cc57bbe89f6de92b0eb04d0857599b6cb05c4ca1ac51cf296c5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 06</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 01" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-db2f41a9ded6ba1c3a5d3565b19d52ebb4102aeef4c798da3c3b1c15ee2dd535.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 01</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 02" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-9f6916ad2ebacd846b1fb21f37a59ae96b3e9c5221867db82c90745678f5af26.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 02</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 03" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-7b8ca4f1980c593619b3e9d6f80a6e3b427f9b7ce58f5d306cf3790b05e4ea07.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 03</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 04" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-f0d361d25a9b2e432a630e8d1ecdc52808e64affdbe4fd1f760f1b42ef3b9529.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 04</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 05" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-07138227310b0d932b9d7bdc06a047c13f56f2d98a2a8052ec53205ae5208d9c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 05</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 06" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-f528902901651cc57bbe89f6de92b0eb04d0857599b6cb05c4ca1ac51cf296c5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 06</span></div></div></div></div><div class="asset-loop-lane"><div class="asset-loop-marquee"><div class="asset-loop-set"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 07" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-9e7baa2700b549052a3b5c1edf11f795d984b157789715bb10b050ba306ceef1.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 07</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 08" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-630fa8a3911fc392cf2291d78b56736b6fc834d8b4fd2e528ff49e5fe35c4a9f.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 08</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 09" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-03faeb87d7d0c61164f3cb641ae06cac4778f855737a260512d65a40cdade371.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 09</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 10" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-59e403526d1821af0e9fe3da302ac5d7007b903ca62567aecbf80c9f4ceef64e.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 10</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 11" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-dc4f3523969b2d6a1e57675af760548b687bd38b12a9fe45e292ae92b45a5452.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 11</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 12" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-e21bed1882b6cae925bdeac1594b325b889b8eba60f3c7f92ea05e0b1a459b3b.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 12</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 07" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-9e7baa2700b549052a3b5c1edf11f795d984b157789715bb10b050ba306ceef1.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 07</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 08" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-630fa8a3911fc392cf2291d78b56736b6fc834d8b4fd2e528ff49e5fe35c4a9f.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 08</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 09" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-03faeb87d7d0c61164f3cb641ae06cac4778f855737a260512d65a40cdade371.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 09</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 10" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-59e403526d1821af0e9fe3da302ac5d7007b903ca62567aecbf80c9f4ceef64e.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 10</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 11" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-dc4f3523969b2d6a1e57675af760548b687bd38b12a9fe45e292ae92b45a5452.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 11</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 12" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-e21bed1882b6cae925bdeac1594b325b889b8eba60f3c7f92ea05e0b1a459b3b.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 12</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 07" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-9e7baa2700b549052a3b5c1edf11f795d984b157789715bb10b050ba306ceef1.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 07</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 08" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-630fa8a3911fc392cf2291d78b56736b6fc834d8b4fd2e528ff49e5fe35c4a9f.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 08</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 09" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-03faeb87d7d0c61164f3cb641ae06cac4778f855737a260512d65a40cdade371.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 09</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 10" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-59e403526d1821af0e9fe3da302ac5d7007b903ca62567aecbf80c9f4ceef64e.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 10</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 11" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-dc4f3523969b2d6a1e57675af760548b687bd38b12a9fe45e292ae92b45a5452.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 11</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 12" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-e21bed1882b6cae925bdeac1594b325b889b8eba60f3c7f92ea05e0b1a459b3b.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 12</span></div></div></div></div><div class="asset-loop-lane"><div class="asset-loop-marquee"><div class="asset-loop-set"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 13" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-3d98d37c9565c71ab48232329f8a49b5f5a4dfaf5bf1ad285583c6f7a3fb62cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 13</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 14" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-32225ed5a57c6bc1ce000a1e7656461e83c3d0e253453ed3f0b7d7f0ab622862.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 14</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 15" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-06afd05283a5d7a05699831523e3fcebe8951367dbeb4e8ce1a27b13b3525e62.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 15</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 16" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-75040698b95f4ba3867ee2f2bcac2d9f36893e8e5eb222bada4355af398ab0cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 16</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 17" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-a78e79c303ace2e1fa534efa9011a39503e19000396f931b7cd69c7b468c3c25.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 17</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 18" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-b724623bb90f071fce9bb35e1592f4701ac83df56ee3ea9fcd9c8882f9ad428c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 18</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 13" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-3d98d37c9565c71ab48232329f8a49b5f5a4dfaf5bf1ad285583c6f7a3fb62cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 13</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 14" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-32225ed5a57c6bc1ce000a1e7656461e83c3d0e253453ed3f0b7d7f0ab622862.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 14</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 15" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-06afd05283a5d7a05699831523e3fcebe8951367dbeb4e8ce1a27b13b3525e62.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 15</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 16" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-75040698b95f4ba3867ee2f2bcac2d9f36893e8e5eb222bada4355af398ab0cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 16</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 17" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-a78e79c303ace2e1fa534efa9011a39503e19000396f931b7cd69c7b468c3c25.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 17</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 18" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-b724623bb90f071fce9bb35e1592f4701ac83df56ee3ea9fcd9c8882f9ad428c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 18</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 13" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-3d98d37c9565c71ab48232329f8a49b5f5a4dfaf5bf1ad285583c6f7a3fb62cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 13</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 14" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-32225ed5a57c6bc1ce000a1e7656461e83c3d0e253453ed3f0b7d7f0ab622862.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 14</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 15" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-06afd05283a5d7a05699831523e3fcebe8951367dbeb4e8ce1a27b13b3525e62.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 15</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 16" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-75040698b95f4ba3867ee2f2bcac2d9f36893e8e5eb222bada4355af398ab0cf.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 16</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 17" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-a78e79c303ace2e1fa534efa9011a39503e19000396f931b7cd69c7b468c3c25.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 17</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 18" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-b724623bb90f071fce9bb35e1592f4701ac83df56ee3ea9fcd9c8882f9ad428c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 18</span></div></div></div></div><div class="asset-loop-lane"><div class="asset-loop-marquee"><div class="asset-loop-set"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 19" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-d76058a0a8b2aa79ea48ec9f2d29bb8b8005a92aefd3df30a3551780d0e556d5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 19</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 20" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-0d95c9383b97c281bc4a182d97b6497e713095fe71764519c1cf97e780ae05e8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 20</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 21" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-4caac8302fd260e7a1283209404d3172d2df3ff7a1022d1f2f069507676c47b8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 21</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 22" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-3d8994b3c477ebe855f352fcbafc810a74fa7598fbbaffa229860d676c4063bb.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 22</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 23" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-1d7720a13cac0c32922c821fbfba7c19beb4947e67f432ec70af0ffbfe609d89.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 23</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 24" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-ce68002574e5b44c759755679b0cb0da6279c8be5e75ab77e3e6c9b664447fae.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 24</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 19" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-d76058a0a8b2aa79ea48ec9f2d29bb8b8005a92aefd3df30a3551780d0e556d5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 19</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 20" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-0d95c9383b97c281bc4a182d97b6497e713095fe71764519c1cf97e780ae05e8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 20</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 21" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-4caac8302fd260e7a1283209404d3172d2df3ff7a1022d1f2f069507676c47b8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 21</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 22" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-3d8994b3c477ebe855f352fcbafc810a74fa7598fbbaffa229860d676c4063bb.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 22</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 23" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-1d7720a13cac0c32922c821fbfba7c19beb4947e67f432ec70af0ffbfe609d89.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 23</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 24" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-ce68002574e5b44c759755679b0cb0da6279c8be5e75ab77e3e6c9b664447fae.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 24</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 19" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-d76058a0a8b2aa79ea48ec9f2d29bb8b8005a92aefd3df30a3551780d0e556d5.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 19</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 20" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-0d95c9383b97c281bc4a182d97b6497e713095fe71764519c1cf97e780ae05e8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 20</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 21" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-4caac8302fd260e7a1283209404d3172d2df3ff7a1022d1f2f069507676c47b8.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 21</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 22" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-3d8994b3c477ebe855f352fcbafc810a74fa7598fbbaffa229860d676c4063bb.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 22</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 23" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-1d7720a13cac0c32922c821fbfba7c19beb4947e67f432ec70af0ffbfe609d89.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 23</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 24" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-ce68002574e5b44c759755679b0cb0da6279c8be5e75ab77e3e6c9b664447fae.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 24</span></div></div></div></div><div class="asset-loop-lane"><div class="asset-loop-marquee"><div class="asset-loop-set"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 25" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-79b1cc93409575317105204e0ce5004c6aebbed8f971156b24b7eef2e79a2e98.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 25</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 26" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-240a9e24b4e211525d93769a4e4d90cb5c24122fc038269a2aff44931700d9f6.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 26</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 27" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-73b681de692914e1367e41973b069d20c797d0d4a595fa649cb2ecdbf2073401.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 27</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 28" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-e9ec93c89d5ba6380dd470cc81b8e934fa69d7fccf6bed3db0ff171a4d15c87c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 28</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 29" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-99134236305462c3c7820223e782f00f3d5d425aaa6655c5744078f666007184.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 29</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 30" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-0642bfd266a20cfbbc6e744ebdcdf242136f5e320d8d99445e884949e4565c01.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 30</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 25" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-79b1cc93409575317105204e0ce5004c6aebbed8f971156b24b7eef2e79a2e98.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 25</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 26" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-240a9e24b4e211525d93769a4e4d90cb5c24122fc038269a2aff44931700d9f6.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 26</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 27" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-73b681de692914e1367e41973b069d20c797d0d4a595fa649cb2ecdbf2073401.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 27</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 28" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-e9ec93c89d5ba6380dd470cc81b8e934fa69d7fccf6bed3db0ff171a4d15c87c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 28</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 29" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-99134236305462c3c7820223e782f00f3d5d425aaa6655c5744078f666007184.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 29</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 30" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-0642bfd266a20cfbbc6e744ebdcdf242136f5e320d8d99445e884949e4565c01.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 30</span></div></div><div class="asset-loop-set asset-loop-copy" aria-hidden="true"><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 25" style="--loop-col: 0; --loop-edge: 4.5; background-image: url(&quot;assets/uploads/portfolio-79b1cc93409575317105204e0ce5004c6aebbed8f971156b24b7eef2e79a2e98.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 25</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 26" style="--loop-col: 1; --loop-edge: 3.5; background-image: url(&quot;assets/uploads/portfolio-240a9e24b4e211525d93769a4e4d90cb5c24122fc038269a2aff44931700d9f6.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 26</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 27" style="--loop-col: 2; --loop-edge: 2.5; background-image: url(&quot;assets/uploads/portfolio-73b681de692914e1367e41973b069d20c797d0d4a595fa649cb2ecdbf2073401.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 27</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 28" style="--loop-col: 3; --loop-edge: 1.5; background-image: url(&quot;assets/uploads/portfolio-e9ec93c89d5ba6380dd470cc81b8e934fa69d7fccf6bed3db0ff171a4d15c87c.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 28</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 29" style="--loop-col: 4; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-99134236305462c3c7820223e782f00f3d5d425aaa6655c5744078f666007184.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 29</span></div><div class="asset-loop-cell image-slot has-image" aria-label="可替换素材 30" style="--loop-col: 5; --loop-edge: 0.5; background-image: url(&quot;assets/uploads/portfolio-0642bfd266a20cfbbc6e744ebdcdf242136f5e320d8d99445e884949e4565c01.jpg&quot;); background-size: cover; background-position: center center;"><span class="asset-loop-label">PATTERN / 30</span></div></div></div></div>
+    </div>
+    <div class="asset-loop-foot"><i></i><span class="">01—30 / REPLACEABLE MATERIALS</span><i></i></div>
+  </section><section class="asset-carousel" id="assets">
+    <div class="asset-carousel-top"><span>03 / ASSETS &amp; 3D</span><a href="#sections">返回目录 ↑</a></div>
+    <header class="asset-carousel-head in-view">
+      <span>MODEL / MATERIAL / PROCESS</span>
+      <h2 style="font-size: 91px;">纸艺模型</h2>
+      <p>基于海外市场进行调研选品，并开发同类产品。每个作品都是全站独立完成，从图纸设计到结构拆解、到材质与实物裁切制作成品，录制教学视频和步骤拆解文档，拍摄并后期完成具有吸引力的详情图，最后素材进库完成归档，并编写修正全套SOP流程规范。</p>
+      <div class="asset-carousel-loop-label"><i></i><em>CONTINUOUS AUTO LOOP</em></div>
+    </header>
+    <div class="asset-carousel-viewport in-view" aria-label="素材和模型作品轮播">
+      <div class="asset-carousel-marquee">
+        <div class="asset-carousel-track"><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-c9ab026777e89466d096efdc69ae093c19e8b70f2b2757ab803f9256fd9d6580.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="1" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,291</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">397</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">112</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-04911485f1dd02884056b879785beed9c522776b24dfde59b071b3d378c8e8e2.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot" hidden=""></div>
+    <div class="asset-carousel-card-meta">
+      <span>01</span>
+      <div><strong>立体字母</strong><small>PAPER OBJECT / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-e5cf1aca6477d0c262e79a5dbb044cd4596af701dbdd93a33022f23fdd3f0ba9.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="2" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">1,692</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">216</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">480</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-854e23a33104b537be4d35602061071227ecad68c2f6ad9d9a7c2ea85e4eec08.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-28f1951db6e2fedc416ac007992d1b1269148c01f997fc3398dc5936fcdcb64b.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>02</span>
+      <div><strong>朋克3D猫头套</strong><small>3D CHARACTER / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a09e17224b7cc4a032f347ffdae71f9da1c833318f855369ff0bd6270cbbebc1.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="3" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">4,147</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">356</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">198</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-c861786645d40831273b927dd2b163841f832395aa08123c557e80566b624bb5.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-ff9afbe5648a65aa973dbb0216fc9030118098953247017e0983c2f3d9e4c7c3.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>03</span>
+      <div><strong>毕业帽花朵装饰</strong><small>MATERIAL STUDY / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-c7a1276467f1543edd5d1bd1fc25ce14d31299797eb4a70567a35a0af0dcb247.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="4" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,469</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">114</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">230</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-4189d948cdd228d3d56e8c6c264a80d9b4259999d5e84fae104511820ade12bc.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-121d364e7d85afbbe351781629504efb91f2559d97663da911ab4478013c324b.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>04</span>
+      <div><strong>母亲节花朵礼盒</strong><small>STRUCTURE / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-2927981465cf1da267284dc48054c62dc8c64593205d18c497ea50a6f4ee3506.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="5" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,424</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">456</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">437</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-a965d9f98efcbcd1d2a86e664621769a0f5c7b01853d56c5089b1aeb7b36df98.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-9081e395f4f218c1f26d4373c64ac660ec44d5f96c246b11e5eaac3bdd779295.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>05</span>
+      <div><strong>田园建筑灯罩</strong><small>ASSET DESIGN / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-0aa5cfd9d1a84113bd24fa5dbc4eb3f7ae204f31cfc4d379eb21ba1baeacd173.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="6" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,836</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">120</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">531</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-d31a69667c7c199813955ab5413ad86ba89efd26bf58d79a0b468d020d0c982d.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-c66cc01a7b148a43bcb7eb0abc74584c220bad5ac3c81273178a51a807cad45a.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>06</span>
+      <div><strong>圣诞节庆祝花环</strong><small>FINAL OBJECT / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-5af34f15ee2ab8eb7adfdb9f0fa94c279def4298bdde5e8850dc9379ce900d4d.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="7" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,847</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">494</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">200</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-35b7359670704681a4a3c6012aa05fad4ac6b8b4da365139ee4258dbff47caab.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-7828607dd9ec95cb9ee23059395bc4bfa9c51a9987e46c11d1e142d219c61272.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>07</span>
+      <div><strong>亡灵节花灯罩</strong><small>MOTION PROCESS / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a4fac93ff2d9c46d8f2a043da4d3a4969af14b0f09594ad569c1d5e6d3fa3c3d.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="8" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">1,490</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">400</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">420</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-de3c5ee905081f566b03503fb4413cfd8164e645fc4455ba22ed11924622040d.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-6d93be5c3ae518e9295f9df3ac18f53c10aab2c57b5ebf0cb395493a096d0915.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>08</span>
+      <div><strong>圣诞术爆炸力礼盒</strong><small>MORE WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-7494544161fc20b76de3cbb92b617ba2e8497370d8005fe4220dc0198c227244.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="9" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,483</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">147</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">439</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-ec0bca0489da3eb6b2a19dcb519004e73a41f13ae6e09cfdec9a3a27d708d2e5.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot" hidden=""></div>
+    <div class="asset-carousel-card-meta">
+      <span>09</span>
+      <div><strong>森林3D熊摆件</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-b86d5883c603d112f532668757392ee8a19ea83ce5e74a4c03e3c13894ecf808.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="10" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,539</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">186</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">252</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-22a753d9037f3607b01ee1f89c9340064d4b91e231b1718dbd0b4d21ee8291dc.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-725c6fc4f812bcc14fb762c445f80fc79abbf41cc72e36d09d05bfe1e36f395e.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>10</span>
+      <div><strong>三角蛋糕礼盒</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-31b755f7199c1fa96a52f4a88cee388ed453cc213509dc8569262a0900be2382.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="11" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,734</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">249</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">498</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-4bacdb77c979450ea004f25cac030d28d5ec4891daabf7db5b72887b21bc72c6.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot" hidden=""></div>
+    <div class="asset-carousel-card-meta">
+      <span>11</span>
+      <div><strong>蝴蝶立体贺卡</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-39a9251c89c4e6fdff90462e7805731f12d237dd4386bf72f550751a4eee9324.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="12" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,237</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">521</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">425</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-5567b1b41755e1085d8acdafb2deee69f592a8535b7bd64fc2fd5ffd2c8be4ec.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-68efc5f80f819ba2f1607641dc19b37ec2e54ca865f910e6870891f24d0896bf.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>12</span>
+      <div><strong>亡灵节骷髅头套</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-f9c7206245de838f11aca303e12fd2e6bd7157476e161907bc408da0a31045e0.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="13" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,115</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">404</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">489</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-9f98d0d1fa896b981c60e5ef3219c853d926be1d5f3033c9d011725d467f9b2e.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-795e871eb4cb6c0e8ecd21871fcfb4d8c64d6fa81588c9a2d69c88f1a421ad0e.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    <div class="asset-carousel-card-meta">
+      <span>13</span>
+      <div><strong>巧克力蛋糕礼盒</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-16b5ec8526f2e5fba5c72f606009efc019e06cfafd97a28a17de358d7def357c.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="14" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,933</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">257</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">275</span></button>
+      </div>
+    </div>
+    <div class="asset-carousel-detail-slot has-image" hidden="" style="background-image: url(&quot;assets/uploads/portfolio-773bafd521a7600bd9ca3dd8f9fd5a0b2b0de0673172e6da36d36b76008f49bf.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="asset-carousel-detail-slot" hidden=""></div>
+    <div class="asset-carousel-card-meta">
+      <span>14</span>
+      <div><strong>黑龙头套</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article></div>
+        <div class="asset-carousel-track asset-carousel-track-copy"><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-c9ab026777e89466d096efdc69ae093c19e8b70f2b2757ab803f9256fd9d6580.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="1" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,291</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">397</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">112</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>01</span>
+      <div><strong>立体字母</strong><small>PAPER OBJECT / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-e5cf1aca6477d0c262e79a5dbb044cd4596af701dbdd93a33022f23fdd3f0ba9.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="2" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">1,692</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">216</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">480</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>02</span>
+      <div><strong>朋克3D猫头套</strong><small>3D CHARACTER / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a09e17224b7cc4a032f347ffdae71f9da1c833318f855369ff0bd6270cbbebc1.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="3" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">4,147</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">356</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">198</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>03</span>
+      <div><strong>毕业帽花朵装饰</strong><small>MATERIAL STUDY / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-c7a1276467f1543edd5d1bd1fc25ce14d31299797eb4a70567a35a0af0dcb247.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="4" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,469</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">114</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">230</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>04</span>
+      <div><strong>母亲节花朵礼盒</strong><small>STRUCTURE / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-2927981465cf1da267284dc48054c62dc8c64593205d18c497ea50a6f4ee3506.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="5" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,424</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">456</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">437</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>05</span>
+      <div><strong>田园建筑灯罩</strong><small>ASSET DESIGN / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-0aa5cfd9d1a84113bd24fa5dbc4eb3f7ae204f31cfc4d379eb21ba1baeacd173.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="6" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,836</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">120</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">531</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>06</span>
+      <div><strong>圣诞节庆祝花环</strong><small>FINAL OBJECT / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-5af34f15ee2ab8eb7adfdb9f0fa94c279def4298bdde5e8850dc9379ce900d4d.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="7" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,847</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">494</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">200</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>07</span>
+      <div><strong>亡灵节花灯罩</strong><small>MOTION PROCESS / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a4fac93ff2d9c46d8f2a043da4d3a4969af14b0f09594ad569c1d5e6d3fa3c3d.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="8" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">1,490</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">400</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">420</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>08</span>
+      <div><strong>圣诞术爆炸力礼盒</strong><small>MORE WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-7494544161fc20b76de3cbb92b617ba2e8497370d8005fe4220dc0198c227244.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="9" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,483</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">147</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">439</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>09</span>
+      <div><strong>森林3D熊摆件</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-b86d5883c603d112f532668757392ee8a19ea83ce5e74a4c03e3c13894ecf808.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="10" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,539</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">186</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">252</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>10</span>
+      <div><strong>三角蛋糕礼盒</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-31b755f7199c1fa96a52f4a88cee388ed453cc213509dc8569262a0900be2382.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="11" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,734</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">249</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">498</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>11</span>
+      <div><strong>蝴蝶立体贺卡</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-39a9251c89c4e6fdff90462e7805731f12d237dd4386bf72f550751a4eee9324.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="12" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,237</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">521</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">425</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>12</span>
+      <div><strong>亡灵节骷髅头套</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-f9c7206245de838f11aca303e12fd2e6bd7157476e161907bc408da0a31045e0.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="13" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">2,115</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">404</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">489</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>13</span>
+      <div><strong>巧克力蛋糕礼盒</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article><article class="asset-carousel-card" aria-hidden="true">
+    <div class="asset-carousel-visual image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-16b5ec8526f2e5fba5c72f606009efc019e06cfafd97a28a17de358d7def357c.jpg&quot;); background-size: cover; background-position: center center;">
+      <button type="button" class="asset-carousel-more" aria-label="查看更多详情">更多详情 <span aria-hidden="true">↗</span></button>
+      
+      <div class="asset-carousel-social" data-social-card="14" role="group" aria-label="作品互动">
+        <span class="asset-carousel-social-stat" aria-label="观看"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg><span data-social-count="views">3,933</span></span>
+        <button type="button" data-social-action="like" aria-label="点赞" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.7c0 4.2-8.8 10-8.8 10S3.2 12.9 3.2 8.7A4.5 4.5 0 0 1 12 6.9a4.5 4.5 0 0 1 8.8 1.8Z"></path></svg><span data-social-count="likes">257</span></button>
+        <button type="button" data-social-action="favorite" aria-label="收藏" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.8h12v16l-6-3.7-6 3.7v-16Z"></path></svg><span data-social-count="favorites">275</span></button>
+      </div>
+    </div>
+    
+    <div class="asset-carousel-card-meta">
+      <span>14</span>
+      <div><strong>黑龙头套</strong><small>NEW WORK / PLACEHOLDER</small></div>
+      <b>↗</b>
+    </div>
+  </article></div>
+      </div>
+    </div>
+    <div class="asset-carousel-float-controls" aria-label="轮播浏览控制">
+      <button class="asset-carousel-float-prev" type="button" aria-label="向左浏览图片">‹</button>
+      <button class="asset-carousel-float-next" type="button" aria-label="向右浏览图片">›</button>
+    </div>
+  </section><section class="detail illustration-detail" id="illustration">
+    <div class="detail-top"><span>04 / ILLUSTRATION</span><a href="#sections">返回目录 ↑</a></div>
+    <div class="illustration-layout">
+      <header class="illustration-copy">
+        <span class="illustration-index">04 / COMMERCIAL ILLUSTRATION</span>
+        <h2 class="">商业插画</h2>
+        <h3 class="">①使命召唤KV插画设计</h3>
+        <p class="">这里将展示从草图、构图、沟通修改过程到最终落地的完整案例。</p>
+        <div class="tags"><span class="">KV</span><span class="">H5</span><span class="">品牌定制</span><span class="">系列延展</span></div>
+      </header>
+      <div class="illustration-hero image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-078479f79ef7e7d8d8177eb6fc661effd92d5262abb27bd234d04d95abeb23b4.png&quot;); background-size: cover; background-position: center center;"></div>
+      <div class="illustration-gallery" aria-label="商业插画作品展示">
+        <div class="illustration-phone image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-ec7c81d13ce1e83130fb45f4281e30b207ca6cd67cea0b044922b7b58df663e9.png&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-process image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-e29f2d39b38d4292d02270e1d1ff179de169e37ab0655b3d065dd1b93bfb9db0.png&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-project image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-7f54373608819bdb8f56aaac041306fd334fed0085cdd0a6130e846d48c5638f.jpg&quot;); background-size: cover; background-position: center center;"></div>
+      </div>
+    </div>
+    <section class="illustration-case-board" aria-labelledby="illustration-case-title">
+      <header class="illustration-case-heading">
+        <span>ILLUSTRATION DESIGN / CASE STUDY</span>
+        <h3 id="illustration-case-title" class="">②喜马拉雅十周年联名H5插画设计</h3>
+      </header>
+      <div class="illustration-case-grid" aria-label="竖版插画作品图片位">
+        <div class="illustration-case-poster image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-a10ece0cfce9ae3cc2c188a4628226a1fb23b82d5a353ff65493109d1e2d6e6f.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-case-poster image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-4c40da394012fe105aae61030e9c1499173fb22ec908e28bf965b7ba3d2fb49e.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-case-mosaic">
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-6ca76d94aeea182366a7269c1caf898f515bb20bc2b84357229ec4df38042ddd.jpg&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-138a2b99bda39f463e1b267ef2ed2808f448d18bc35cee57d05a5b66f0eab89c.jpg&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-b5c91050a10d623a26e31a6f66afefdefb9d28edab3ebe7ed476ff57b019709f.jpg&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-f764181e17b1fe14fcff86a5691cd271e62842a7a702ea92ab4c726d6bce3196.jpg&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-75ac55b771a020f6d16d06a15ce210425ebff41f8e907f1449cfb927e4c4dbfd.jpg&quot;); background-size: cover; background-position: center center;"></div>
+          <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-fa56270c038686849a6bcb209c61ff2f10890c91c4372d73563f5d9fc7fd74af.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        </div>
+      </div>
+    </section>
+    <section class="illustration-feature-board" aria-labelledby="illustration-feature-title">
+      <header class="illustration-feature-heading">
+        <span>03 / COMMERCIAL ILLUSTRATION</span>
+        <h3 id="illustration-feature-title" class="" style="font-size: 30px;">③ vivo世界杯插画设计&nbsp; &nbsp;(拉美地区)</h3>
+      </header>
+      <div class="illustration-feature-stage" aria-label="错落展示的竖版插画作品">
+        <span class="illustration-feature-side illustration-feature-side-left" aria-hidden="true">ILLUSTRATION DESIGN</span>
+        <span class="illustration-feature-side illustration-feature-side-right" aria-hidden="true">ILLUSTRATION DESIGN</span>
+        <i class="illustration-feature-star illustration-feature-star-one" aria-hidden="true">✦</i>
+        <i class="illustration-feature-star illustration-feature-star-two" aria-hidden="true">✦</i>
+        <div class="illustration-feature-card illustration-feature-phone image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-f7bf096698f6633ae4ad78746b744e63937fc1ba6c2e57e1f7ffcd818b0f005a.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-feature-card illustration-feature-card-two image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-58954f05ef63355165381253eb0ca604ea114059bca4deb1f4d3311bd2c31ec1.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-feature-card illustration-feature-card-three image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-6947a9e83b2ef75dd9bee6ec6ad9e93567aa939354af57769970e0fb1c3d1fc9.jpg&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="illustration-feature-card illustration-feature-card-four image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-048468cb8d2d0fd6e242211997662db64db80b57f3560d12101023689f2d2a96.jpg&quot;); background-size: cover; background-position: center center;"></div>
+      </div>
+    </section>
+    <section class="jinling-board" aria-labelledby="jinling-title">
+      <header class="jinling-heading">
+        <span>04 / THE TWELVE BEAUTIES OF JINLING</span>
+        <h3 id="jinling-title" class="" style="font-size: 30px;">④ 数字藏品&nbsp; &nbsp; &nbsp;金陵十二钗插画设计</h3>
+        <p class="">以人物谱系为线索，展开十二幅独立肖像。每一幅均可替换为 1200 × 1600 的竖版插画。</p>
+      </header>
+      <div class="jinling-scroll" aria-label="金陵十二钗人物插画展示">
+        <span class="jinling-spine-label" aria-hidden="true">A DREAM OF RED MANSIONS · PORTRAIT SERIES</span>
+        <div class="jinling-row">
+          <article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-ed6dc64927ac85911a188e3cea8748509ad213d90ea056d26f2c39d3684f51ed.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>01 / TWELVE</span><h4 class="">林黛玉</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-8b8827286075d61077a0184087d8f826f5582bb5fec082bbeaf7c20685b4abd7.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>02 / TWELVE</span><h4 class="">薛宝钗</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-cfb9d354527ab19ab51755a6ff8d485c11b9ea52a8edd2703a62707cfe549f5b.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>03 / TWELVE</span><h4 class="">贾元春</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-44c20a405bfdf9c481e4b238e55c96d7ba3b2fb5c1c306b15ad9d34c981ea1d6.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>04 / TWELVE</span><h4 class="">贾探春</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-d5a4acf1cccf389aba378f41c8308dcd498cf9d159d21faa7a53e1afe3a0a4df.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>05 / TWELVE</span><h4 class="">史湘云</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-65b37be96b9ce702238d496b99c279e810feeb9a6b27455c5e6fab936fd8a34d.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>06 / TWELVE</span><h4 class="">妙玉</h4><i aria-hidden="true">✳</i></div>
+          </article>
+        </div><div class="jinling-row">
+          <article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-5880a28f02c79f386e5b1309f61a1475c637f0bd5eb5519316f6e36abc268a1e.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>07 / TWELVE</span><h4 class="">贾迎春</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-2d38e62bfa285dee04038885effbb9899c330d4db8c2a4d5903ac254348d81ca.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>08 / TWELVE</span><h4 class="">贾惜春</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-3129cab115c6903016160faacf0187934abf5cce4b04e4c31014f293ae4d0d69.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>09 / TWELVE</span><h4 class="">王熙凤</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-0805f584f242e0314ea939faf0f550ac1ab4dd9eae4a5286abe4a892373c8b18.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>10 / TWELVE</span><h4 class="">贾巧姐</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-9a4fb4220ff59c8f2cb28cb025b7ecc1501d15d9073b98750fecdce07c27fa02.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>11 / TWELVE</span><h4 class="">李纨</h4><i aria-hidden="true">✳</i></div>
+          </article><article class="jinling-item">
+            <div class="jinling-portrait image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-162c9c5e62383a6263aea829b0e2dddafdc7f443f97b8051ea330e0fc269398e.jpg&quot;); background-size: cover; background-position: center center;"></div>
+            <div class="jinling-caption"><span>12 / TWELVE</span><h4 class="">秦可卿</h4><i aria-hidden="true">✳</i></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </section><section class="mural-horizontal" id="mural" style="--mural-scroll:384vh">
+    <div class="mural-sticky">
+      <div class="mural-progress"><i style="width: 0%;"></i><span>01 / 05</span></div>
+      <div class="mural-track" style="transform: translate3d(0px, 0px, 0px);">
+        <article class="mural-panel mural-intro">
+          <div class="mural-intro-copy in-view">
+            <span>05 / MURAL ARCHIVE</span>
+            <h2 class="">彩绘</h2>
+            <p class="">2018-2022<div>精选墙体彩绘与空间视觉项目，按项目展示现场环境、设计方案、绘制过程和最终完成效果。</div></p>
+            <b>SCROLL TO EXPLORE&nbsp; →</b>
+          </div>
+          <div class="mural-intro-art image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-372bdb5cc280ad97b4a0bf398a6521e18be3651fb1fd5c949e06ef5e6f855d62.jpg&quot;); background-size: cover; background-position: center center;"><i></i><i></i><i></i></div>
+        </article>
+        
+    <article class="mural-panel mural-project">
+      <div class="mural-project-inner">
+        <header class="mural-project-head">
+          <span class="">SCENE 01 / 社区 / 城市更新</span>
+          <p class="">项目地点 · 完成年份 · 墙面尺寸（待补充）</p>
+        </header>
+        <div class="mural-image image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-949910650988e936f811eac5646052e895842ee6938824e77277fd2704ed578c.png&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="mural-project-copy in-view">
+          <div>
+            <h3 class="">艺术街区涂鸦</h3>
+            <p class="">结合环境、人群与在地文化，让大型画面参与公共空间的更新。</p>
+          </div>
+          <div class="mural-project-meta">
+            <span class="">方案设计 / 绘制 / 现场执行（待补充）</span>
+            <b>继续滚动探索 →</b>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="mural-panel mural-project">
+      <div class="mural-project-inner">
+        <header class="mural-project-head">
+          <span class="">SCENE 02 / 教育 / 亲子场景</span>
+          <p class="">项目地点 · 完成年份 · 墙面尺寸（待补充）</p>
+        </header>
+        <div class="mural-image image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-9ae2caeef62c288f811f32d1aed2e57a364cf898934926e4e89ced6c59f1aeb1.png&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="mural-project-copy in-view">
+          <div>
+            <h3 class="">儿童艺术空间</h3>
+            <p class="">通过角色、故事与明快色彩，营造友好且富有想象力的环境。</p>
+          </div>
+          <div class="mural-project-meta">
+            <span class="">方案设计 / 绘制 / 现场执行（待补充）</span>
+            <b>继续滚动探索 →</b>
+          </div>
+        </div>
+      </div>
+    </article>
+    <article class="mural-panel mural-project">
+      <div class="mural-project-inner">
+        <header class="mural-project-head">
+          <span class="">SCENE 03 / 企业 / 团队文化</span>
+          <p class="">项目地点 · 完成年份 · 墙面尺寸（待补充）</p>
+        </header>
+        <div class="mural-image image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-1c275eb754c0224901c311d5cb2aedb8e17b41d3d9f35517be5700aa3b6889d8.png&quot;); background-size: cover; background-position: center center;"></div>
+        <div class="mural-project-copy in-view">
+          <div>
+            <h3 class="">巨幅新中式水墨</h3>
+            <p class="">把品牌理念转化为空间叙事，让文化被员工与访客真实感知。</p>
+          </div>
+          <div class="mural-project-meta">
+            <span class="">方案设计 / 绘制 / 现场执行（待补充）</span>
+            <b>继续滚动探索 →</b>
+          </div>
+        </div>
+      </div>
+    </article>
+        <article class="mural-panel mural-outro">
+          <div class="mural-story-field" aria-label="20 张彩绘故事背景图片"><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 01" style="--case-duration:26s;--case-delay:0s;background-image:url('assets/mural-story/mural-story-01.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 02" style="--case-duration:26.55s;--case-delay:-1.25s;background-image:url('assets/mural-story/mural-story-02.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 03" style="--case-duration:27.1s;--case-delay:-2.5s;background-image:url('assets/mural-story/mural-story-03.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 04" style="--case-duration:27.65s;--case-delay:-3.75s;background-image:url('assets/mural-story/mural-story-04.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 05" style="--case-duration:28.2s;--case-delay:-5s;background-image:url('assets/mural-story/mural-story-05.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 06" style="--case-duration:28.75s;--case-delay:-6.25s;background-image:url('assets/mural-story/mural-story-06.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 07" style="--case-duration:29.3s;--case-delay:-7.5s;background-image:url('assets/mural-story/mural-story-07.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 08" style="--case-duration:29.85s;--case-delay:-8.75s;background-image:url('assets/mural-story/mural-story-08.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 09" style="--case-duration:30.4s;--case-delay:-10s;background-image:url('assets/mural-story/mural-story-09.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 10" style="--case-duration:30.95s;--case-delay:-11.25s;background-image:url('assets/mural-story/mural-story-10.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 11" style="--case-duration:31.5s;--case-delay:-12.5s;background-image:url('assets/mural-story/mural-story-11.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 12" style="--case-duration:32.05s;--case-delay:-13.75s;background-image:url('assets/mural-story/mural-story-12.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 13" style="--case-duration:32.6s;--case-delay:-15s;background-image:url('assets/mural-story/mural-story-13.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 14" style="--case-duration:33.15s;--case-delay:-16.25s;background-image:url('assets/mural-story/mural-story-14.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 15" style="--case-duration:33.7s;--case-delay:-17.5s;background-image:url('assets/mural-story/mural-story-15.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 16" style="--case-duration:34.25s;--case-delay:-18.75s;background-image:url('assets/mural-story/mural-story-16.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 17" style="--case-duration:34.8s;--case-delay:-20s;background-image:url('assets/mural-story/mural-story-17.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 18" style="--case-duration:35.35s;--case-delay:-21.25s;background-image:url('assets/mural-story/mural-story-18.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 19" style="--case-duration:35.9s;--case-delay:-22.5s;background-image:url('assets/mural-story/mural-story-19.jpg')"></div><div class="mural-story-tile image-slot has-image" aria-label="故事背景图片 20" style="--case-duration:36.45s;--case-delay:-23.75s;background-image:url('assets/mural-story/mural-story-20.jpg')"></div></div>
+          <div class="mural-outro-copy in-view">
+            <span>END OF MURAL ARCHIVE</span>
+            <h2 class="">每一面墙，<br>都可以成为故事。</h2>
+            <p class="">更多空间、更多合作与更多仍在发生的现场，等待继续补充。</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section><section class="detail platforms-project" id="platforms">
+    <div class="detail-top"><span>06 / MORE OF ME</span><a href="#sections">返回目录 ↑</a></div>
+    <div class="platforms-project-main">
+      <div class="platforms-project-intro">
+        <div class="platforms-project-copy">
+          <span class="platforms-project-kicker">PERSONAL WORKS / SELECTED PROJECT</span>
+          <h2 class="">其他个人作品</h2>
+          <h3 class="">更多练习、过程和正在发生的创作。</h3>
+          <p class="">集中展示个人练习，参赛，IP运营的作品。<div>更多爱好↓<span style="font-size: clamp(11px, 0.85vw, 13px);">↓</span><span style="font-size: clamp(11px, 0.85vw, 13px);">↓</span></div></p>
+          <div class="tags"><span class="">厨艺</span><span class="">书法</span><span class="">海娜</span><span class="">篆刻</span></div>
+        </div>
+        <div class="image-slot platforms-project-secondary has-image" style="background-image: url(&quot;assets/uploads/portfolio-f6d5a421bc94afd3325afb384801de3376e7f5021c49523826bbc2c5cbfa5aa4.png&quot;); background-size: cover; background-position: center center;"></div>
+      </div>
+      <div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/detail-5-image-1.jpg&quot;); background-size: cover; background-position: center center;"></div>
+    </div>
+    <div class="platforms-process-grid" aria-label="作品过程图片"><figure class="platforms-process-item"><div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-85d127c1a0464894fa7858bf6ce67555dd69e9c60b5368ed32747a83f00fd110.png&quot;); background-size: cover; background-position: center center;"></div></figure><figure class="platforms-process-item"><div class="image-slot has-image" style="background-image: url(&quot;assets/uploads/portfolio-6121ae73bff550da28b4b36a0486a2463b843e38afb523bd70de21f4f2a06357.png&quot;); background-size: cover; background-position: center center;"></div></figure><figure class="platforms-process-item"><div class="image-slot platforms-process-image has-image" style="background-image: url(&quot;assets/uploads/detail-5-image-4.jpg&quot;); background-size: cover; background-position: center center;"></div></figure></div>
+  </section>
+    <section class="platforms-followup-board" aria-label="更多个人作品">
+      <div class="platforms-followup-grid" aria-label="三张可替换的 5:7 竖版插画">
+        <div class="image-slot platforms-followup-image has-image" aria-label="可替换个人作品 01" style="background-image: url(&quot;assets/uploads/76144ed31df2436f8d23629a587e919a.webp&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-followup-image has-image" aria-label="可替换个人作品 02" style="background-image: url(&quot;assets/uploads/1736d97da8dd4543af503091cd7518d7.webp&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-followup-image has-image" aria-label="可替换个人作品 03" style="background-image: url(&quot;assets/uploads/62e390d642ab41aa8e6778ac9f506024.webp&quot;); background-size: cover; background-position: center center;"></div>
+      </div>
+    </section>
+  <section class="platforms-after-gallery" aria-label="其他个人作品展示">
+    <div class="platforms-after-gallery-grid"><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 01" style="background-image: url(&quot;assets/uploads/platforms-gallery-01.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 02" style="background-image: url(&quot;assets/uploads/platforms-gallery-02.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 03" style="background-image: url(&quot;assets/uploads/platforms-gallery-03.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 04" style="background-image: url(&quot;assets/uploads/platforms-gallery-04.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 05" style="background-image: url(&quot;assets/uploads/platforms-gallery-05.jpg&quot;); background-size: cover; background-position: center center;"></div><div class="image-slot platforms-after-gallery-image has-image" aria-label="其他个人作品 06" style="background-image: url(&quot;assets/uploads/platforms-gallery-06.jpg&quot;); background-size: cover; background-position: center center;"></div></div>
+  </section></div>
+    <footer>
+      <h2 class="in-view">静候佳音<span>。</span></h2>
+      <div class="footer-links in-view">
+        <div class="footer-contact-item"><a class="" href="mailto:1443540337@qq.com">1443540337@qq.com ↗</a><button class="contact-copy" type="button" data-copy="email" data-copy-value="1443540337@qq.com ↗">复制 ↗</button></div>
+        <div class="footer-contact-item"><span class="">微信 FaXiuStampede ↗</span><button class="contact-copy" type="button" data-copy="wechat" data-copy-value="微信 FaXiuStampede ↗">复制 ↗</button></div>
+        <div class="footer-contact-item"><span class="">19165030789 ↗</span><button class="contact-copy" type="button" data-copy="social" data-copy-value="19165030789 ↗">复制 ↗</button></div>
+        <div class="footer-qr"><div class="footer-qr-image image-slot has-image" aria-label="可替换的小红书二维码" style="background-image:url('assets/xiaohongshu-qr.png')"></div><span>小红书 / 扫码联系</span></div>
+      </div>
+    </footer>
+  </main>
+
+  
+  
+
+  
+
+  
+  <div class="illustration-image-viewer" hidden="" role="dialog" aria-modal="true" aria-label="商业插画大图预览"><button type="button" class="illustration-image-viewer-close" aria-label="关闭大图">×</button><img alt="商业插画放大预览"></div><div class="illustration-image-viewer jinling-image-viewer" hidden="" role="dialog" aria-modal="true" aria-label="金陵十二钗插画大图预览"><button type="button" class="illustration-image-viewer-close" aria-label="关闭大图">×</button><img alt="金陵十二钗插画完整大图预览"></div><div class="asset-detail-viewer" hidden="" role="dialog" aria-modal="true" aria-label="作品详情图片"><div class="asset-detail-viewer-card"><div class="asset-detail-viewer-image"></div><div class="asset-detail-viewer-controls"><small class="asset-detail-viewer-hint">点击任意空白返回</small><span class="asset-detail-viewer-count"></span><button type="button" class="asset-detail-viewer-next">下一张 →</button></div></div></div>
+  
+
+
+
+
+<script src="site.js" defer></script></body></html>
