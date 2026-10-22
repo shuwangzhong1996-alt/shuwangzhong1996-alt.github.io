@@ -2,6 +2,21 @@
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const q = (selector, root = document) => root.querySelector(selector);
   const qa = (selector, root = document) => [...root.querySelectorAll(selector)];
+  const loader = q('#siteLoader');
+  if (loader) {
+    const finishLoader = () => {
+      loader.classList.add('is-leaving');
+      document.body.classList.remove('site-loading');
+      setTimeout(() => loader.remove(), 900);
+    };
+    if (reduceMotion) finishLoader();
+    else {
+      requestAnimationFrame(() => loader.classList.add('is-tracing'));
+      setTimeout(() => loader.classList.add('is-filled'), 900);
+      setTimeout(() => loader.classList.add('is-expanding'), 1120);
+      setTimeout(finishLoader, 1780);
+    }
+  }
 
   // Keep scroll driven elements in their final visible state and update navigation,
   // progress, and the horizontal mural as the visitor moves through the page.
@@ -14,7 +29,13 @@
     const y = scrollY, max = Math.max(1, document.documentElement.scrollHeight - innerHeight);
     document.body.classList.toggle('scrolled', y > 40);
     if (progress) progress.style.height = `${Math.min(100, y / max * 100)}%`;
-    if (!reduceMotion) q('.cover-title')?.style.setProperty('--drift', `${Math.min(innerHeight, y) * .13}px`);
+    if (!reduceMotion) {
+      const drift = Math.min(innerHeight, y) * .055;
+      const title = q('.cover-title');
+      title?.style.setProperty('--drift-left', `${-drift}px`);
+      title?.style.setProperty('--drift-middle', `${drift * .55}px`);
+      title?.style.setProperty('--drift-right', `${-drift * .28}px`);
+    }
     if (hub) {
       const cards = qa('.chapter', hub), desktop = innerWidth > 900 && !reduceMotion;
       const raw = desktop ? Math.max(0, Math.min(1, (y - (hub.offsetTop - innerHeight * .78)) / (innerHeight * .96))) : 1;
